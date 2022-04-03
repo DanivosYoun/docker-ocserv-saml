@@ -45,7 +45,7 @@ RUN buildDeps=" \
             apr-dev \
 	"; \
 	set -x && \
-      apk add --update --no-cache --virtual .build-deps $buildDeps && \
+      apk add --no-cache --virtual .build-deps $buildDeps && \
       cd /tmp && \
       wget http://www.aleksey.com/xmlsec/download/xmlsec1-1.2.29.tar.gz && \
       tar xzf xmlsec1-1.2.29.tar.gz && \
@@ -81,7 +81,7 @@ RUN buildDeps=" \
             sipcalc \
             libnl3 \
             bash" && \
-      apk add --no-cache --update --virtual .run-deps $runDeps && \
+      apk add --no-cache --virtual .run-deps $runDeps && \
       apk del .build-deps && \
       rm -rf /var/cache/apk/* && \
       rm -rf /tmp/*
