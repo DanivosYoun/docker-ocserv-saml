@@ -64,7 +64,7 @@ fi
 
 ##### Process Variables #####
 
-if [ ${LISTEN_PORT} != "443" ]; then
+if [ ${LISTEN_PORT} != "8443" ]; then
 	echo "$(date) [info] Modifying the listening port"
 	#Find TCP/UDP line numbers and use sed to replace the lines
 	TCPLINE = $(grep -rne 'tcp-port =' ocserv.conf | grep -Eo '^[^:]+')
@@ -139,7 +139,7 @@ fi
 
 if [[ ! -z "${HOSTNAME}" ]]; then
 	sed -i "s/^hostname.*$/hostname = ${HOSTNAME}/" /config/ocserv.conf
-	sed -i "s/https:\/\/[^\/?#]*/https:\/\/${HOSTNAME}/g" /config/sp-metadata.xml
+	sed -i "s/https:\/\/[^\/?#]*/https:\/\/${HOSTNAME}:8443/g" /config/sp-metadata.xml
 fi
 
 ##### Generate certs if none exist #####
