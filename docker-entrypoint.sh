@@ -21,28 +21,6 @@ else
 	export LISTEN_PORT="8443"
 fi
 
-export TUNNEL_MODE=$(echo "${TUNNEL_MODE}" | sed -e 's~^[ \t]*~~;s~[ \t]*$~~')
-# Check PROXY_SUPPORT env var
-if [[ ! -z "${TUNNEL_MODE}" ]]; then
-	echo "$(date) [info] TUNNEL_MODE defined as '${TUNNEL_MODE}'"
-else
-	echo "$(date) [warn] TUNNEL_MODE not defined,(via -e TUNNEL_MODE), defaulting to 'all'"
-	export TUNNEL_MODE="all"
-fi
-
-if [[ ${TUNNEL_MODE} == "all" ]]; then
-	echo "$(date) [info] Tunnel mode is all, ignoring TUNNEL_ROUTES. If you want to define specific routes, change TUNNEL_MODE to split-include"
-elif [[ ${TUNNEL_MODE} == "split-include" ]]; then
-	# strip whitespace from start and end of SPLIT_DNS_DOMAINS
-	export TUNNEL_ROUTES=$(echo "${TUNNEL_ROUTES}" | sed -e 's~^[ \t]*~~;s~[ \t]*$~~')
-	# Check SPLIT_DNS_DOMAINS env var and exit if not defined
-	if [[ ! -z "${TUNNEL_ROUTES}" ]]; then
-		echo "$(date) [info] TUNNEL_ROUTES defined as '${TUNNEL_ROUTES}'"
-	else
-		echo "$(date) [err] TUNNEL_ROUTES not defined (via -e TUNNEL_ROUTES), but TUNNEL_MODE is defined as split-include"
-	fi
-fi
-
 export DNS_SERVERS=$(echo "${DNS_SERVERS}" | sed -e 's~^[ \t]*~~;s~[ \t]*$~~')
 # Check DNS_SERVERS env var
 if [[ ! -z "${DNS_SERVERS}" ]]; then
@@ -72,28 +50,6 @@ if [ ${LISTEN_PORT} != "8443" ]; then
 	sed -i "$(TCPLINE)s/.*/tcp-port = ${LISTEN_PORT}/" /config/ocserv.conf
 	sed -i "$(UDPLINE)s/.*/tcp-port = ${LISTEN_PORT}/" /config/ocserv.conf
 fi
-
-if [[ ${TUNNEL_MODE} == "all" ]]; then
-	echo "$(date) [info] Tunneling all traffic through VPN"
-	sed -i '/^route=/d' /config/ocserv.conf
-elif [[ ${TUNNEL_MODE} == "split-include" ]]; then
-	echo "$(date) [info] Tunneling routes $TUNNEL_ROUTES through VPN"
-	sed -i '/^route=/d' /config/ocserv.conf
-	# split comma seperated string into list from TUNNEL_ROUTES env variable
-	IFS=',' read -ra tunnel_route_list <<< "${TUNNEL_ROUTES}"
-	# process name servers in the list
-	for tunnel_route_item in "${tunnel_route_list[@]}"; do
-		tunnel_route_item=$(echo "${tunnel_route_item}" | sed -e 's~^[ \t]*~~;s~[ \t]*$~~')
-		IP=$(sipcalc ${tunnel_route_item} | awk '/Network address/ {print $4; exit}')
-		NETMASK=$(sipcalc ${tunnel_route_item} | awk '/Network mask/ {print $4; exit}')
-		TUNDUP=$(cat /config/ocserv.conf | grep "route=${IP}/${NETMASK}")
-		if [[ -z "$TUNDUP" ]]; then
-			echo "$(date) [info] Adding route=$IP/$NETMASK to ocserv.conf"
-			echo "route=$IP/$NETMASK" >> /config/ocserv.conf
-		fi
-	done
-fi
-
 
 # Add DNS_SERVERS to ocserv conf
 sed -i '/^dns =/d' /config/ocserv.conf
