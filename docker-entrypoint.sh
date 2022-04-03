@@ -64,7 +64,7 @@ fi
 
 ##### Process Variables #####
 
-if [ ${LISTEN_PORT} != "443" ]; then
+if [ ${LISTEN_PORT} != "8443" ]; then
 	echo "$(date) [info] Modifying the listening port"
 	#Find TCP/UDP line numbers and use sed to replace the lines
 	TCPLINE = $(grep -rne 'tcp-port =' ocserv.conf | grep -Eo '^[^:]+')
