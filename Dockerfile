@@ -54,7 +54,7 @@ RUN buildDeps=" \
       make && \
       make install && \
       cd /tmp && \
-      pip install six && \
+      pip3 install six && \
       wget https://dev.entrouvert.org/releases/lasso/lasso-2.5.1.tar.gz && \
       tar zxf lasso-2.5.1.tar.gz && \
       cd lasso-2.5.1 && \
