@@ -17,7 +17,7 @@ export LISTEN_PORT=$(echo "${LISTEN_PORT}" | sed -e 's~^[ \t]*~~;s~[ \t]*$~~')
 if [[ ! -z "${LISTEN_PORT}" ]]; then
 	echo "$(date) [info] LISTEN_PORT defined as '${LISTEN_PORT}'"
 else
-	echo "$(date) [warn] LISTEN_PORT not defined,(via -e LISTEN_PORT), defaulting to '8443'"
+	echo "$(date) [warn] LISTEN_PORT not defined,(via -e LISTEN_PORT), defaulting to '443'"
 	export LISTEN_PORT="8443"
 fi
 
@@ -49,7 +49,7 @@ if [[ ! -z "${DNS_SERVERS}" ]]; then
 		echo "$(date) [info] DNS_SERVERS defined as '${DNS_SERVERS}'"
 	else
 		echo "$(date) [warn] DNS_SERVERS not defined (via -e DNS_SERVERS), defaulting to Google and FreeDNS name servers"
-		export DNS_SERVERS="8.8.8.8,164.124.101.2"
+		export DNS_SERVERS="8.8.8.8,37.235.1.174,8.8.4.4,37.235.1.177"
 fi
 
 export SPLIT_DNS_DOMAINS=$(echo "${SPLIT_DNS_DOMAINS}" | sed -e 's~^[ \t]*~~;s~[ \t]*$~~')
@@ -64,7 +64,7 @@ fi
 
 ##### Process Variables #####
 
-if [ ${LISTEN_PORT} != "8443" ]; then
+if [ ${LISTEN_PORT} != "443" ]; then
 	echo "$(date) [info] Modifying the listening port"
 	#Find TCP/UDP line numbers and use sed to replace the lines
 	TCPLINE = $(grep -rne 'tcp-port =' ocserv.conf | grep -Eo '^[^:]+')
