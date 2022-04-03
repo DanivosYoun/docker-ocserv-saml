@@ -1,6 +1,6 @@
 FROM alpine:latest
 
-LABEL maintainer="@MorganOnBass" \
+LABEL maintainer="@danivosyoun" \
       maintainer="morgan@mackechnie.uk" \
       version=0.1 \
       description="Openconnect server with saml authentication support"
