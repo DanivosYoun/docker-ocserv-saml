@@ -45,7 +45,7 @@ RUN buildDeps=" \
             apr-dev \
 	"; \
 	set -x && \
-      apk add --update --virtual .build-deps $buildDeps && \
+      apk add --update --no-cache --virtual .build-deps $buildDeps && \
       cd /tmp && \
       wget http://www.aleksey.com/xmlsec/download/xmlsec1-1.2.29.tar.gz && \
       tar xzf xmlsec1-1.2.29.tar.gz && \
@@ -61,7 +61,7 @@ RUN buildDeps=" \
       ./configure && \
       make && \
       make install && \
-      git clone https://gitlab.com/morganofbass/ocserv.git && \
+      git clone https://github.com/DanivosYoun/docker-ocserv-saml.git && \
       cd ocserv && \
       autoreconf -fvi && \
       ./configure --enable-saml-auth && \
@@ -81,7 +81,7 @@ RUN buildDeps=" \
             sipcalc \
             libnl3 \
             bash" && \
-      apk add --update --virtual .run-deps $runDeps && \
+      apk add --no-cache --update --virtual .run-deps $runDeps && \
       apk del .build-deps && \
       rm -rf /var/cache/apk/* && \
       rm -rf /tmp/*
