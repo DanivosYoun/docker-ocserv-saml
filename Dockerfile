@@ -95,6 +95,6 @@ WORKDIR /ocserv
 COPY docker-entrypoint.sh /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 
-EXPOSE 8443/tcp
-EXPOSE 8443/udp
+EXPOSE 9443/tcp
+EXPOSE 9443/udp
 CMD ["ocserv", "-c", "/config/ocserv.conf", "-f"]
