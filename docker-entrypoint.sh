@@ -21,25 +21,6 @@ else
 	export LISTEN_PORT="8443"
 fi
 
-export DNS_SERVERS=$(echo "${DNS_SERVERS}" | sed -e 's~^[ \t]*~~;s~[ \t]*$~~')
-# Check DNS_SERVERS env var
-if [[ ! -z "${DNS_SERVERS}" ]]; then
-		echo "$(date) [info] DNS_SERVERS defined as '${DNS_SERVERS}'"
-	else
-		echo "$(date) [warn] DNS_SERVERS not defined (via -e DNS_SERVERS), defaulting to Google and FreeDNS name servers"
-		export DNS_SERVERS="8.8.8.8,37.235.1.174,8.8.4.4,37.235.1.177"
-fi
-
-export SPLIT_DNS_DOMAINS=$(echo "${SPLIT_DNS_DOMAINS}" | sed -e 's~^[ \t]*~~;s~[ \t]*$~~')
-if [[ ! -z "${SPLIT_DNS_DOMAINS}" ]]; then
-	# Check SPLIT_DNS_DOMAINS env var
-	if [[ ! -z "${SPLIT_DNS_DOMAINS}" ]]; then
-		echo "$(date) [info] SPLIT_DNS_DOMAINS defined as '${SPLIT_DNS_DOMAINS}'"
-	else
-		echo "$(date) [err] SPLIT_DNS_DOMAINS not defined (via -e SPLIT_DNS_DOMAINS)"
-	fi
-fi
-
 ##### Process Variables #####
 
 if [ ${LISTEN_PORT} != "8443" ]; then
@@ -49,48 +30,6 @@ if [ ${LISTEN_PORT} != "8443" ]; then
 	UDPLINE = $(grep -rne 'udp-port =' ocserv.conf | grep -Eo '^[^:]+')
 	sed -i "$(TCPLINE)s/.*/tcp-port = ${LISTEN_PORT}/" /config/ocserv.conf
 	sed -i "$(UDPLINE)s/.*/tcp-port = ${LISTEN_PORT}/" /config/ocserv.conf
-fi
-
-# Add DNS_SERVERS to ocserv conf
-sed -i '/^dns =/d' /config/ocserv.conf
-# split comma seperated string into list from NAME_SERVERS env variable
-IFS=',' read -ra name_server_list <<< "${DNS_SERVERS}"
-# process name servers in the list
-for name_server_item in "${name_server_list[@]}"; do
-	DNSDUP=$(cat /config/ocserv.conf | grep "dns = ${name_server_item}")
-	if [[ -z "$DNSDUP" ]]; then
-		# strip whitespace from start and end of lan_network_item
-		name_server_item=$(echo "${name_server_item}" | sed -e 's~^[ \t]*~~;s~[ \t]*$~~')
-		echo "$(date) [info] Adding dns = ${name_server_item} to ocserv.conf"
-		echo "dns = ${name_server_item}" >> /config/ocserv.conf
-	fi
-done
-
-# Process SPLIT_DNS env var
-if [[ ! -z "${SPLIT_DNS_DOMAINS}" ]]; then
-	sed -i '/^split-dns =/d' /config/ocserv.conf
-	# split comma seperated string into list from SPLIT_DNS_DOMAINS env variable
-	IFS=',' read -ra split_domain_list <<< "${SPLIT_DNS_DOMAINS}"
-	# process name servers in the list
-	for split_domain_item in "${split_domain_list[@]}"; do
-		DOMDUP=$(cat /config/ocserv.conf | grep "split-dns = ${split_domain_item}")
-		if [[ -z "$DOMDUP" ]]; then
-			# strip whitespace from start and end of lan_network_item
-			split_domain_item=$(echo "${split_domain_item}" | sed -e 's~^[ \t]*~~;s~[ \t]*$~~')
-			echo "$(date) [info] Adding split-dns = ${split_domain_item} to ocserv.conf"
-			echo "split-dns = ${split_domain_item}" >> /config/ocserv.conf
-		fi
-	done
-fi
-if [[ ! -z "${CLIENTNET}" ]]; then
-    sed -i "s/^ipv4-network.*$/ipv4-network = ${CLIENTNET}/" /config/ocserv.conf
-fi
-if [[ ! -z "${CLIENTNETMASK}" ]]; then
-    sed -i "s/^ipv4-netmask.*$/ipv4-netmask = ${CLIENTNETMASK}/" /config/ocserv.conf
-fi
-
-if [[ ! -z "${DEFAULT_DOMAIN}" ]]; then
-	sed -i "s/^default-domain =.*$/default-domain = ${DEFAULT_DOMAIN}/" /config/ocserv.conf
 fi
 
 if [[ ! -z "${HOSTNAME}" ]]; then
