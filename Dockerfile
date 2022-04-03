@@ -61,7 +61,7 @@ RUN buildDeps=" \
       ./configure && \
       make && \
       make install && \
-      git clone https://github.com/DanivosYoun/docker-ocserv-saml.git && \
+      git clone https://gitlab.com/morganofbass/ocserv.git && \
       cd ocserv && \
       autoreconf -fvi && \
       ./configure --enable-saml-auth && \
