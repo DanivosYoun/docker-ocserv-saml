@@ -18,7 +18,7 @@ if [[ ! -z "${LISTEN_PORT}" ]]; then
 	echo "$(date) [info] LISTEN_PORT defined as '${LISTEN_PORT}'"
 else
 	echo "$(date) [warn] LISTEN_PORT not defined,(via -e LISTEN_PORT), defaulting to '443'"
-	export LISTEN_PORT="8443"
+	export LISTEN_PORT="9443"
 fi
 
 export TUNNEL_MODE=$(echo "${TUNNEL_MODE}" | sed -e 's~^[ \t]*~~;s~[ \t]*$~~')
@@ -64,7 +64,7 @@ fi
 
 ##### Process Variables #####
 
-if [ ${LISTEN_PORT} != "8443" ]; then
+if [ ${LISTEN_PORT} != "9443" ]; then
 	echo "$(date) [info] Modifying the listening port"
 	#Find TCP/UDP line numbers and use sed to replace the lines
 	TCPLINE = $(grep -rne 'tcp-port =' ocserv.conf | grep -Eo '^[^:]+')
