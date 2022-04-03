@@ -1,4 +1,4 @@
-FROM alpine:latest
+FROM alpine:3.11
 
 LABEL maintainer="@danivosyoun" \
       maintainer="morgan@mackechnie.uk" \
@@ -17,8 +17,8 @@ RUN buildDeps=" \
             libtool \
             libxml2-dev \
             py-six \
-            python3 \
-            py3-pip \
+            python \
+            py-pip \
             perl-dev \
             xmlsec-dev \
             zlib-dev \
@@ -54,7 +54,7 @@ RUN buildDeps=" \
       make && \
       make install && \
       cd /tmp && \
-      pip3 install six && \
+      pip install six && \
       wget https://dev.entrouvert.org/releases/lasso/lasso-2.5.1.tar.gz && \
       tar zxf lasso-2.5.1.tar.gz && \
       cd lasso-2.5.1 && \
