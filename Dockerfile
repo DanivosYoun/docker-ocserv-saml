@@ -17,8 +17,8 @@ RUN buildDeps=" \
             libtool \
             libxml2-dev \
             py-six \
-            python \
-            py2-pip \
+            python3 \
+            py3-pip \
             perl-dev \
             xmlsec-dev \
             zlib-dev \
