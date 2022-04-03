@@ -47,7 +47,7 @@ RUN buildDeps=" \
 	set -x && \
       apk add --no-cache --virtual .build-deps $buildDeps && \
       cd /tmp && \
-      wget http://www.aleksey.com/xmlsec/download/xmlsec1-1.2.29.tar.gz && \
+      wget https://www.aleksey.com/xmlsec/download/older-releases/xmlsec1-1.2.29.tar.gz && \
       tar xzf xmlsec1-1.2.29.tar.gz && \
       cd xmlsec1-1.2.29 && \
       ./configure --enable-soap && \
