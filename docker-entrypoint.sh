@@ -139,7 +139,7 @@ fi
 
 if [[ ! -z "${HOSTNAME}" ]]; then
 	sed -i "s/^hostname.*$/hostname = ${HOSTNAME}/" /config/ocserv.conf
-	sed -i "s/https:\/\/[^\/?#]*/https:\/\/${HOSTNAME}:8443/g" /config/sp-metadata.xml
+	sed -i "s/https:\/\/[^\/?#]*/https:\/\/${HOSTNAME}/g" /config/sp-metadata.xml
 fi
 
 ##### Generate certs if none exist #####
